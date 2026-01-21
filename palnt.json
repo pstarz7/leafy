@@ -1,0 +1,753 @@
+  const plantData = {
+            plants: [
+                {
+                    plant_id: "PLANT_TOMATO",
+                    basic_info: {
+                        name: "Tomato",
+                        scientific_name: "Solanum lycopersicum",
+                        family: "Solanaceae",
+                        plant_type: "Vegetable",
+                        life_cycle: "Annual",
+                        climate_preference: "Warm and mild climate",
+                    },
+                    image:
+                        "https://i.pinimg.com/736x/73/77/e8/7377e801092f3c202daf92113bc07847.jpg",
+                    planting_guide: {
+                        best_season: "Winter to early summer",
+                        sowing_method: "Seed",
+                        seed_depth_cm: 1,
+                        spacing_cm: 45,
+                        germination_time_days: "5–10",
+                    },
+                    soil_requirements: {
+                        soil_type: "Well-drained sandy loam",
+                        soil_ph: "5.8 – 6.8",
+                        soil_preparation: [
+                            "Loosen soil deeply",
+                            "Mix compost or cow dung",
+                            "Ensure proper drainage",
+                        ],
+                    },
+                    sunlight_and_water: {
+                        sunlight: "Full sun",
+                        sunlight_hours_per_day: "6–8",
+                        watering_schedule: {
+                            early_stage: "Light daily watering",
+                            growth_stage: "Every 2–3 days",
+                            fruiting_stage: "Deep watering twice a week",
+                        },
+                    },
+                    growth_stages: [
+                        {
+                            stage: "Germination",
+                            duration_days: "7",
+                            care: "Keep soil moist",
+                        },
+                        {
+                            stage: "Vegetative",
+                            duration_days: "30",
+                            care: "Support plant, fertilize",
+                        },
+                        {
+                            stage: "Flowering",
+                            duration_days: "20",
+                            care: "Avoid excess nitrogen",
+                        },
+                        {
+                            stage: "Fruiting",
+                            duration_days: "30",
+                            care: "Consistent watering",
+                        },
+                    ],
+                    common_problems: [
+                        {
+                            problem: "Yellow leaves",
+                            cause: "Overwatering or nitrogen deficiency",
+                            solution: ["Reduce watering", "Use balanced fertilizer"],
+                        },
+                    ],
+                    pests_and_diseases: [
+                        {
+                            name: "Aphids",
+                            type: "Pest",
+                            symptoms: "Sticky and curled leaves",
+                            cure: "Neem oil spray weekly",
+                        },
+                    ],
+                    harvest_info: {
+                        harvest_time_days: "80–90",
+                        harvest_sign: "Fruit turns red",
+                        post_harvest_tip: "Harvest regularly for more yield",
+                    },
+                    best_practices: [
+                        "Mulching improves moisture retention",
+                        "Avoid wetting leaves",
+                        "Staking is essential for tall varieties",
+                    ],
+                    safety_notes: {
+                        toxic_parts: ["Leaves", "Stems"],
+                        safe_to_eat: ["Fruit"],
+                    },
+                },
+                {
+                    plant_id: "PLANT_SPINACH",
+                    basic_info: {
+                        name: "Spinach",
+                        scientific_name: "Spinacia oleracea",
+                        family: "Amaranthaceae",
+                        plant_type: "Leafy vegetable",
+                        life_cycle: "Annual",
+                        climate_preference: "Cool climate",
+                    },
+                    image:
+                        "https://images.unsplash.com/photo-1576045057995-568f588f82fb?auto=format&fit=crop&q=80&w=1200",
+                    planting_guide: {
+                        best_season: "Winter",
+                        sowing_method: "Seed",
+                        seed_depth_cm: 1,
+                        spacing_cm: 20,
+                        germination_time_days: "5–7",
+                    },
+                    soil_requirements: {
+                        soil_type: "Loamy soil",
+                        soil_ph: "6.5 – 7.5",
+                        soil_preparation: [
+                            "Add compost",
+                            "Keep soil loose",
+                            "Enrich with nitrogen-rich fertilizer",
+                        ],
+                    },
+                    sunlight_and_water: {
+                        sunlight: "Partial sun",
+                        sunlight_hours_per_day: "4–6",
+                        watering_schedule: "Keep soil consistently moist",
+                    },
+                    growth_stages: [
+                        {
+                            stage: "Leaf growth",
+                            duration_days: "25",
+                            care: "Harvest outer leaves regularly to encourage new growth",
+                        },
+                    ],
+                    common_problems: [
+                        {
+                            problem: "Bitter taste",
+                            cause: "High temperature",
+                            solution: ["Grow in cooler season", "Provide temporary shade"],
+                        },
+                    ],
+                    pests_and_diseases: [
+                        {
+                            name: "Leaf miners",
+                            type: "Pest",
+                            symptoms: "White trails on leaves",
+                            cure: "Remove affected leaves immediately",
+                        },
+                    ],
+                    harvest_info: {
+                        harvest_time_days: "35–45",
+                        harvest_sign: "Leaves reach full size",
+                        post_harvest_tip: "Eat fresh for maximum nutrition",
+                    },
+                    best_practices: [
+                        "Frequent harvesting encourages growth",
+                        "Mulch to keep roots cool",
+                    ],
+                    safety_notes: { toxic_parts: [], safe_to_eat: ["Leaves"] },
+                },
+                {
+                    plant_id: "PLANT_SUNFLOWER",
+                    basic_info: {
+                        name: "Sunflower",
+                        scientific_name: "Helianthus annuus",
+                        family: "Asteraceae",
+                        plant_type: "Flower",
+                        life_cycle: "Annual",
+                        climate_preference: "Hot and sunny climate",
+                    },
+                    image:
+                        "https://images.unsplash.com/photo-1470509037663-253afd7f0f51?auto=format&fit=crop&q=80&w=1200",
+                    planting_guide: {
+                        best_season: "Summer",
+                        sowing_method: "Direct seed",
+                        seed_depth_cm: 2,
+                        spacing_cm: 30,
+                        germination_time_days: "7–10",
+                    },
+                    soil_requirements: {
+                        soil_type: "Well-drained soil",
+                        soil_ph: "6.0 – 7.5",
+                        soil_preparation: [
+                            "Dig deeply to accommodate taproots",
+                            "Add light compost",
+                        ],
+                    },
+                    sunlight_and_water: {
+                        sunlight: "Full sun",
+                        sunlight_hours_per_day: "8+",
+                        watering_schedule: "Every 3–4 days",
+                    },
+                    growth_stages: [
+                        {
+                            stage: "Stem growth",
+                            duration_days: "30",
+                            care: "Ensure maximum sunlight",
+                        },
+                        {
+                            stage: "Flowering",
+                            duration_days: "30",
+                            care: "Support tall stem if windy",
+                        },
+                    ],
+                    common_problems: [
+                        {
+                            problem: "Weak stem",
+                            cause: "Low sunlight",
+                            solution: ["Move to sunnier spot", "Avoid overcrowding"],
+                        },
+                    ],
+                    pests_and_diseases: [
+                        {
+                            name: "Birds",
+                            type: "Pest",
+                            symptoms: "Missing seeds",
+                            cure: "Netting after flowering",
+                        },
+                    ],
+                    harvest_info: {
+                        harvest_time_days: "75–85",
+                        harvest_sign: "Back of flower turns brown",
+                        post_harvest_tip: "Hang heads to dry for seed collection",
+                    },
+                    best_practices: [
+                        "Plant in open space",
+                        "Taller varieties may need staking",
+                    ],
+                    safety_notes: { toxic_parts: [], safe_to_eat: ["Seeds"] },
+                },
+                {
+                    plant_id: "PLANT_CHILLI",
+                    basic_info: {
+                        name: "Chilli",
+                        scientific_name: "Capsicum annuum",
+                        family: "Solanaceae",
+                        plant_type: "Vegetable",
+                        life_cycle: "Annual",
+                        climate_preference: "Warm climate",
+                    },
+                    image:
+                        "https://i.pinimg.com/736x/40/f8/aa/40f8aaf312470a0ce1388ae595b4d634.jpg",
+                    planting_guide: {
+                        best_season: "Winter",
+                        sowing_method: "Seed",
+                        seed_depth_cm: 1,
+                        spacing_cm: 40,
+                        germination_time_days: "7–14",
+                    },
+                    soil_requirements: {
+                        soil_type: "Loamy soil",
+                        soil_ph: "6.0 – 6.8",
+                        soil_preparation: ["Mix well-rotted manure", "Keep soil friable"],
+                    },
+                    sunlight_and_water: {
+                        sunlight: "Full sun",
+                        sunlight_hours_per_day: "6–8",
+                        watering_schedule: "Moderate, avoid waterlogging",
+                    },
+                    growth_stages: [
+                        {
+                            stage: "Vegetative",
+                            duration_days: "30",
+                            care: "Pinch tips for bushy growth and more yield",
+                        },
+                    ],
+                    common_problems: [
+                        {
+                            problem: "Flower drop",
+                            cause: "Heat stress",
+                            solution: ["Mulching", "Regular watering during dry spells"],
+                        },
+                    ],
+                    pests_and_diseases: [
+                        {
+                            name: "Mites",
+                            type: "Pest",
+                            symptoms: "Curled leaves",
+                            cure: "Sulphur spray or organic miticide",
+                        },
+                    ],
+                    harvest_info: {
+                        harvest_time_days: "70–80",
+                        harvest_sign: "Fruit turns red or green",
+                        post_harvest_tip: "Can be dried for long-term storage",
+                    },
+                    best_practices: [
+                        "Regular harvesting increases yield",
+                        "Keep soil temperature stable",
+                    ],
+                    safety_notes: { toxic_parts: [], safe_to_eat: ["Fruit"] },
+                },
+                {
+                    plant_id: "PLANT_CORIANDER",
+                    basic_info: {
+                        name: "Coriander",
+                        scientific_name: "Coriandrum sativum",
+                        family: "Apiaceae",
+                        plant_type: "Herb",
+                        life_cycle: "Annual",
+                        climate_preference: "Cool climate",
+                    },
+                    image:
+                        "https://i.pinimg.com/1200x/54/d2/14/54d2144ccd579de183e75c1fceed616f.jpg",
+                    planting_guide: {
+                        best_season: "Winter",
+                        sowing_method: "Seed",
+                        seed_depth_cm: 1,
+                        spacing_cm: 15,
+                        germination_time_days: "7–10",
+                    },
+                    soil_requirements: {
+                        soil_type: "Loose loamy soil",
+                        soil_ph: "6.2 – 6.8",
+                        soil_preparation: [
+                            "Till soil thoroughly",
+                            "Add rich leaf compost",
+                        ],
+                    },
+                    sunlight_and_water: {
+                        sunlight: "Partial sun",
+                        sunlight_hours_per_day: "4–5",
+                        watering_schedule: "Light frequent watering",
+                    },
+                    growth_stages: [
+                        {
+                            stage: "Leaf harvest",
+                            duration_days: "30",
+                            care: "Cut leaves gently from the base",
+                        },
+                    ],
+                    common_problems: [
+                        {
+                            problem: "Bolting",
+                            cause: "High temperature",
+                            solution: ["Grow in cool season", "Keep soil moist"],
+                        },
+                    ],
+                    pests_and_diseases: [
+                        {
+                            name: "Powdery Mildew",
+                            type: "Disease",
+                            symptoms: "White powder on leaves",
+                            cure: "Apply baking soda spray",
+                        },
+                    ],
+                    harvest_info: {
+                        harvest_time_days: "30–40",
+                        harvest_sign: "Leaves fully developed",
+                        post_harvest_tip: "Harvest early morning for best aroma",
+                    },
+                    best_practices: [
+                        "Split seeds before sowing for better germination",
+                        "Don't overwater",
+                    ],
+                    safety_notes: { toxic_parts: [], safe_to_eat: ["Leaves", "Seeds"] },
+                },
+                {
+                    plant_id: "PLANT_ROSE",
+                    basic_info: {
+                        name: "Rose",
+                        scientific_name: "Rosa spp.",
+                        family: "Rosaceae",
+                        plant_type: "Flower",
+                        life_cycle: "Perennial",
+                        climate_preference:
+                            "Mild to warm climate with good air circulation",
+                    },
+                    image:
+                        "https://i.pinimg.com/736x/d9/f2/f1/d9f2f1a0cf3c6e5e2e8485b5900bc919.jpg",
+                    planting_guide: {
+                        best_season: "Late winter to early spring",
+                        sowing_method: "Stem cutting / Grafted plant",
+                        seed_depth_cm: 2,
+                        spacing_cm: 60,
+                        germination_time_days: "10–20",
+                    },
+                    soil_requirements: {
+                        soil_type: "Well-drained loamy soil rich in organic matter",
+                        soil_ph: "6.0 – 7.0",
+                        soil_preparation: [
+                            "Dig soil 30–40 cm deep",
+                            "Mix well-rotted compost or manure",
+                            "Ensure proper drainage to avoid root rot",
+                        ],
+                    },
+                    sunlight_and_water: {
+                        sunlight: "Full sun to partial shade",
+                        sunlight_hours_per_day: "5–7",
+                        watering_schedule: {
+                            early_stage: "Light watering every day",
+                            growth_stage: "Water every 2–3 days",
+                            flowering_stage: "Deep watering twice a week",
+                        },
+                    },
+                    growth_stages: [
+                        {
+                            stage: "Establishment",
+                            duration_days: "20",
+                            care: "Keep soil evenly moist, protect from harsh sunlight",
+                        },
+                        {
+                            stage: "Vegetative growth",
+                            duration_days: "40",
+                            care: "Regular pruning and balanced fertilization",
+                        },
+                        {
+                            stage: "Budding",
+                            duration_days: "15",
+                            care: "Increase potassium-rich fertilizer",
+                        },
+                        {
+                            stage: "Flowering",
+                            duration_days: "30",
+                            care: "Remove spent flowers to encourage blooming",
+                        },
+                    ],
+                    common_problems: [
+                        {
+                            problem: "Poor flowering",
+                            cause: "Lack of sunlight or improper pruning",
+                            solution: [
+                                "Ensure adequate sunlight",
+                                "Prune correctly after flowering",
+                            ],
+                        },
+                    ],
+                    pests_and_diseases: [
+                        {
+                            name: "Aphids",
+                            type: "Pest",
+                            symptoms: "Curled leaves and sticky residue",
+                            cure: "Neem oil or insecticidal soap spray",
+                        },
+                        {
+                            name: "Black spot",
+                            type: "Disease",
+                            symptoms: "Black spots on leaves, leaf drop",
+                            cure: "Remove infected leaves and apply fungicide",
+                        },
+                    ],
+                    harvest_info: {
+                        harvest_time_days: "90–120",
+                        harvest_sign: "Fully opened or partially opened flowers",
+                        post_harvest_tip:
+                            "Cut flowers early morning for longer vase life",
+                    },
+                    best_practices: [
+                        "Prune regularly to promote airflow",
+                        "Mulching helps retain moisture and control weeds",
+                        "Apply fertilizer during active growth periods",
+                    ],
+                    safety_notes: {
+                        toxic_parts: ["Thorns"],
+                        safe_to_eat: ["Rose petals (only pesticide-free varieties)"],
+                    },
+                },
+                {
+                    plant_id: "PLANT_POTATO",
+                    basic_info: {
+                        name: "Potato",
+                        scientific_name: "Solanum tuberosum",
+                        family: "Solanaceae",
+                        plant_type: "Root vegetable",
+                        life_cycle: "Annual",
+                        climate_preference: "Cool to moderate climate",
+                    },
+                    image:
+                        "https://i.pinimg.com/1200x/41/22/e1/4122e1371667376f22a539964c1ffd31.jpg",
+                    planting_guide: {
+                        best_season: "Late autumn to winter",
+                        sowing_method: "Seed tuber",
+                        seed_depth_cm: 10,
+                        spacing_cm: 30,
+                        germination_time_days: "10–15",
+                    },
+                    soil_requirements: {
+                        soil_type: "Loose, well-drained sandy loam",
+                        soil_ph: "5.0 – 6.5",
+                        soil_preparation: [
+                            "Plow soil deeply and remove stones",
+                            "Incorporate organic compost or well-rotted manure",
+                            "Ensure loose soil for proper tuber development",
+                        ],
+                    },
+                    sunlight_and_water: {
+                        sunlight: "Full sun",
+                        sunlight_hours_per_day: "6–8",
+                        watering_schedule: {
+                            early_stage: "Light watering every day",
+                            growth_stage: "Water every 3–4 days",
+                            tuber_formation_stage: "Deep watering twice a week",
+                        },
+                    },
+                    growth_stages: [
+                        {
+                            stage: "Sprouting",
+                            duration_days: "15",
+                            care: "Keep soil slightly moist",
+                        },
+                        {
+                            stage: "Vegetative growth",
+                            duration_days: "30",
+                            care: "Earth up soil around stems",
+                        },
+                        {
+                            stage: "Tuber initiation",
+                            duration_days: "20",
+                            care: "Maintain consistent moisture",
+                        },
+                        {
+                            stage: "Maturation",
+                            duration_days: "25",
+                            care: "Reduce watering before harvest",
+                        },
+                    ],
+                    common_problems: [
+                        {
+                            problem: "Poor tuber formation",
+                            cause: "High temperature or compact soil",
+                            solution: [
+                                "Plant during cooler season",
+                                "Improve soil looseness",
+                            ],
+                        },
+                    ],
+                    pests_and_diseases: [
+                        {
+                            name: "Potato beetle",
+                            type: "Pest",
+                            symptoms: "Holes in leaves",
+                            cure: "Hand picking or neem-based insecticide",
+                        },
+                        {
+                            name: "Late blight",
+                            type: "Disease",
+                            symptoms: "Brown spots on leaves and stems",
+                            cure: "Apply fungicide and remove infected plants",
+                        },
+                    ],
+                    harvest_info: {
+                        harvest_time_days: "90–110",
+                        harvest_sign: "Yellowing and drying of plant foliage",
+                        post_harvest_tip: "Cure tubers in shade before storage",
+                    },
+                    best_practices: [
+                        "Practice crop rotation",
+                        "Avoid waterlogging",
+                        "Earthing up improves yield and prevents greening",
+                    ],
+                    safety_notes: {
+                        toxic_parts: ["Leaves", "Stems", "Green tubers"],
+                        safe_to_eat: ["Mature underground tubers"],
+                    },
+                },
+
+                {
+                    "plant_id": "PLANT_CARROT",
+                    "basic_info": {
+                        "name": "Carrot",
+                        "scientific_name": "Daucus carota subsp. sativus",
+                        "family": "Apiaceae",
+                        "plant_type": "Root vegetable",
+                        "life_cycle": "Annual",
+                        "climate_preference": "Cool to moderate climate"
+                    },
+                    "image": "https://i.pinimg.com/736x/b9/7a/49/b97a494cb6c0d8411b09f8263c9b1023.jpg",
+                    "planting_guide": {
+                        "best_season": "Autumn to winter",
+                        "sowing_method": "Direct seed sowing",
+                        "seed_depth_cm": 1,
+                        "spacing_cm": 8,
+                        "germination_time_days": "10–14"
+                    },
+                    "soil_requirements": {
+                        "soil_type": "Loose, deep, well-drained sandy loam",
+                        "soil_ph": "6.0 – 6.8",
+                        "soil_preparation": [
+                            "Remove stones and clods",
+                            "Loosen soil to at least 25–30 cm depth",
+                            "Mix fine compost; avoid fresh manure"
+                        ]
+                    },
+                    "sunlight_and_water": {
+                        "sunlight": "Full sun",
+                        "sunlight_hours_per_day": "5–7",
+                        "watering_schedule": {
+                            "early_stage": "Light watering daily",
+                            "growth_stage": "Water every 3–4 days",
+                            "root_development_stage": "Deep watering once or twice a week"
+                        }
+                    },
+                    "growth_stages": [
+                        {
+                            "stage": "Germination",
+                            "duration_days": "14",
+                            "care": "Keep soil consistently moist"
+                        },
+                        {
+                            "stage": "Leaf development",
+                            "duration_days": "25",
+                            "care": "Thin seedlings for proper spacing"
+                        },
+                        {
+                            "stage": "Root expansion",
+                            "duration_days": "30",
+                            "care": "Maintain loose soil and steady moisture"
+                        },
+                        {
+                            "stage": "Maturation",
+                            "duration_days": "20",
+                            "care": "Avoid overwatering to prevent cracking"
+                        }
+                    ],
+                    "common_problems": [
+                        {
+                            "problem": "Forked or deformed roots",
+                            "cause": "Rocky soil or fresh manure",
+                            "solution": [
+                                "Use loose, stone-free soil",
+                                "Avoid undecomposed organic matter"
+                            ]
+                        }
+                    ],
+                    "pests_and_diseases": [
+                        {
+                            "name": "Carrot fly",
+                            "type": "Pest",
+                            "symptoms": "Stunted growth and damaged roots",
+                            "cure": "Use neem oil and crop rotation"
+                        },
+                        {
+                            "name": "Leaf blight",
+                            "type": "Disease",
+                            "symptoms": "Brown spots on leaves",
+                            "cure": "Remove affected foliage and apply fungicide"
+                        }
+                    ],
+                    "harvest_info": {
+                        "harvest_time_days": "70–90",
+                        "harvest_sign": "Roots reach full color and size",
+                        "post_harvest_tip": "Harvest carefully to avoid root damage"
+                    },
+                    "best_practices": [
+                        "Thin seedlings early for straight roots",
+                        "Maintain even soil moisture",
+                        "Mulch lightly to control weeds"
+                    ],
+                    "safety_notes": {
+                        "toxic_parts": ["Leaves (in large quantities)"],
+                        "safe_to_eat": ["Root"]
+                    }
+                },
+
+                {
+  "plant_id": "PLANT_HIBISCUS",
+  "basic_info": {
+    "name": "Hibiscus",
+    "scientific_name": "Hibiscus rosa-sinensis",
+    "family": "Malvaceae",
+    "plant_type": "Flower",
+    "life_cycle": "Perennial",
+    "climate_preference": "Warm tropical to subtropical climate"
+  },
+  "image": "https://i.pinimg.com/736x/62/d3/d2/62d3d2d50c0e18237891bedb33b337de.jpg",
+  "planting_guide": {
+    "best_season": "Spring to early summer",
+    "sowing_method": "Stem cutting / Nursery plant",
+    "seed_depth_cm": 3,
+    "spacing_cm": 90,
+    "germination_time_days": "14–21"
+  },
+  "soil_requirements": {
+    "soil_type": "Fertile, well-drained loamy soil",
+    "soil_ph": "6.0 – 7.0",
+    "soil_preparation": [
+      "Loosen soil deeply",
+      "Mix compost or well-rotted manure",
+      "Ensure good drainage to prevent root rot"
+    ]
+  },
+  "sunlight_and_water": {
+    "sunlight": "Full sun to partial shade",
+    "sunlight_hours_per_day": "5–7",
+    "watering_schedule": {
+      "early_stage": "Light watering daily",
+      "growth_stage": "Water every 2–3 days",
+      "flowering_stage": "Deep watering twice a week"
+    }
+  },
+  "growth_stages": [
+    {
+      "stage": "Establishment",
+      "duration_days": "30",
+      "care": "Protect from strong wind and extreme sun"
+    },
+    {
+      "stage": "Vegetative growth",
+      "duration_days": "45",
+      "care": "Regular pruning and nitrogen feeding"
+    },
+    {
+      "stage": "Bud formation",
+      "duration_days": "20",
+      "care": "Apply phosphorus-rich fertilizer"
+    },
+    {
+      "stage": "Flowering",
+      "duration_days": "Continuous",
+      "care": "Remove spent flowers to encourage blooming"
+    }
+  ],
+  "common_problems": [
+    {
+      "problem": "Bud drop",
+      "cause": "Water stress or sudden temperature change",
+      "solution": [
+        "Maintain consistent watering",
+        "Avoid relocating plant frequently"
+      ]
+    }
+  ],
+  "pests_and_diseases": [
+    {
+      "name": "Mealybugs",
+      "type": "Pest",
+      "symptoms": "White cottony masses on stems",
+      "cure": "Neem oil or alcohol swab treatment"
+    },
+    {
+      "name": "Leaf curl virus",
+      "type": "Disease",
+      "symptoms": "Curled and distorted leaves",
+      "cure": "Remove affected parts and control insect vectors"
+    }
+  ],
+  "harvest_info": {
+    "harvest_time_days": "90–120",
+    "harvest_sign": "Fully opened fresh flowers",
+    "post_harvest_tip": "Harvest flowers early morning for medicinal or decorative use"
+  },
+  "best_practices": [
+    "Prune lightly after flowering cycles",
+    "Use organic mulch to conserve moisture",
+    "Apply balanced fertilizer monthly"
+  ],
+  "safety_notes": {
+    "toxic_parts": ["None"],
+    "safe_to_eat": ["Flowers (certain varieties, pesticide-free)"]
+  }
+}
+
+
+
+            ],
+        };

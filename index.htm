@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leafy | Digital Botanical Archive</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --forest: #10493f;
+            --mint: #c4f2ea;
+            --charcoal: #161918;
+            --grey: #7a7a7a;
+            --paper: #ffffff;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--paper);
+            color: var(--charcoal);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        .serif { font-family: 'Instrument Serif', serif; }
+        
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(16, 73, 63, 0.05);
+        }
+
+        .section-padding { padding: 4rem 0; }
+        @media (min-width: 768px) { .section-padding { padding: 8rem 0; } }
+        
+        .container-custom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.25rem;
+        }
+        @media (min-width: 768px) { .container-custom { padding: 0 2rem; } }
+
+        .card-premium {
+            background: #fff;
+            border: 1px solid #f0f0f0;
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .card-premium:hover {
+            border-color: var(--mint);
+            transform: translateY(-8px);
+            box-shadow: 0 40px 80px -20px rgba(16, 73, 63, 0.08);
+        }
+
+        .reveal-up { opacity: 0; transform: translateY(30px); }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f9f9f9; }
+        ::-webkit-scrollbar-thumb { background: var(--forest); border-radius: 10px; }
+
+        #page-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--forest);
+            z-index: 9999;
+            transform: translateY(100%);
+        }
+
+        .hero-img-mask {
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0% 100%);
+        }
+
+        #dashboard-view { display: none; }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--forest);
+            box-shadow: 0 0 0 4px rgba(196, 242, 234, 0.4);
+        }
+
+        .filter-chip {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .filter-chip.active {
+            background-color: var(--forest);
+            color: var(--mint);
+            border-color: var(--forest);
+        }
+
+        .filter-scroll::-webkit-scrollbar { display: none; }
+        .filter-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+        .carousel-item {
+            min-width: 85%;
+            padding: 0 10px;
+        }
+        @media (min-width: 768px) {
+            .carousel-item { min-width: 45%; }
+        }
+        @media (min-width: 1024px) {
+            .carousel-item { min-width: 33.333%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="page-transition"></div>
+
+    <!-- LANDING PAGE VIEW -->
+    <div id="landing-view">
+        <nav class="fixed w-full z-50 glass-nav px-4 md:px-8 py-4 md:py-6 flex justify-between items-center">
+            <div class="flex items-center gap-3 cursor-pointer group" onclick="showView('landing')">
+                <div class="w-8 h-8 md:w-10 md:h-10 bg-[#10493f] rounded-xl flex items-center justify-center text-[#c4f2ea] font-bold text-xl md:text-2xl serif transition-transform group-hover:rotate-12">L</div>
+                <span class="font-bold tracking-tight text-xl md:text-2xl text-[#10493f]">leafy.</span>
+            </div>
+            <div class="hidden lg:flex gap-12 text-[11px] font-bold uppercase tracking-[0.2em] text-[#7a7a7a]">
+                <a href="#about" class="hover:text-[#10493f] transition-colors">Philosophy</a>
+                <a href="#process" class="hover:text-[#10493f] transition-colors">Methodology</a>
+                <a href="#gallery" class="hover:text-[#10493f] transition-colors">Gallery</a>
+                <a href="#archive" class="hover:text-[#10493f] transition-colors">Archive</a>
+            </div>
+            <a href="#archive" class="px-5 md:px-6 py-2.5 bg-[#10493f] text-[#c4f2ea] rounded-full text-[10px] font-bold uppercase tracking-widest hover:brightness-110 transition-all">Explore</a>
+        </nav>
+
+        <header class="min-h-screen flex items-center relative pt-24 md:pt-20 overflow-hidden bg-[#fcfcfc]">
+            <div class="container-custom grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-16 items-center z-10">
+                <div class="lg:col-span-7">
+                    <p class="text-[#10493f] font-bold text-[10px] md:text-xs uppercase tracking-[0.4em] mb-4 md:mb-8 reveal-up">Established 2026 &bull; Digital Herbarium</p>
+                    <h1 class="serif text-6xl md:text-8xl lg:text-[11rem] leading-[0.9] md:leading-[0.8] mb-8 md:mb-12 text-[#10493f] reveal-up">Cultivating <br>the <span class="italic text-[#7a7a7a]">unseen.</span></h1>
+                    <p class="text-base md:text-xl max-w-lg text-[#7a7a7a] mb-8 md:mb-12 leading-relaxed reveal-up">A meticulous technical archive designed for the modern cultivator. We bridge the gap between biological complexity and home gardening simplicity.</p>
+                    <div class="flex flex-wrap gap-4 md:gap-6 reveal-up">
+                        <a href="#archive" class="w-full sm:w-auto text-center px-8 md:px-10 py-4 md:py-5 bg-[#10493f] text-[#c4f2ea] rounded-full font-bold text-[11px] md:text-xs uppercase tracking-widest shadow-xl shadow-[#10493f]/20">Explore Archive</a>
+                        <a href="#about" class="w-full sm:w-auto text-center px-8 md:px-10 py-4 md:py-5 border border-stone-200 rounded-full font-bold text-[11px] md:text-xs uppercase tracking-widest hover:bg-stone-50 transition-all text-[#10493f]">Our Story</a>
+                    </div>
+                </div>
+                <div class="lg:col-span-5 relative reveal-up">
+                    <div class="w-full aspect-[4/5] rounded-[30px] md:rounded-[40px] overflow-hidden shadow-2xl">
+                        <img src="https://i.pinimg.com/736x/a5/d7/29/a5d72991b06445facf1cc52c267d1151.jpg" class="w-full h-full object-cover" alt="Gardening" />
+                    </div>
+                    <div class="absolute -bottom-6 md:-bottom-10 -left-4 md:-left-10 bg-white p-6 md:p-8 rounded-2xl md:rounded-3xl shadow-2xl border border-stone-50 text-center">
+                        <p class="text-[9px] md:text-[10px] font-bold text-[#7a7a7a] uppercase mb-1">Archive Accuracy</p>
+                        <p class="text-3xl md:text-4xl font-bold text-[#10493f] serif">99.8%</p>
+                    </div>
+                </div>
+            </div>
+            <div class="absolute top-0 right-0 w-1/3 h-full bg-[#c4f2ea]/20 -z-0 hero-img-mask hidden lg:block"></div>
+        </header>
+
+        <section id="about" class="section-padding bg-white">
+            <div class="container-custom grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-24 items-center">
+                <div class="reveal-up">
+                    <h2 class="serif text-4xl md:text-6xl text-[#10493f] mb-6 md:mb-8 leading-tight">Biological integrity <br />is our priority.</h2>
+                    <p class="text-base md:text-lg text-[#7a7a7a] leading-relaxed mb-8 md:mb-10">We believe that every plant is a technical system. By understanding environmental parameters, any individual can master cultivation.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                        <div>
+                            <p class="text-3xl font-bold text-[#10493f] serif mb-2">01.</p>
+                            <h4 class="font-bold text-sm uppercase mb-2">Verified Data</h4>
+                            <p class="text-xs text-[#7a7a7a]">Every guide is cross-referenced with botanical whitepapers.</p>
+                        </div>
+                        <div>
+                            <p class="text-3xl font-bold text-[#10493f] serif mb-2">02.</p>
+                            <h4 class="font-bold text-sm uppercase mb-2">Dynamic Support</h4>
+                            <p class="text-xs text-[#7a7a7a]">Step-by-step diagnostic tools for common plant issues.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 reveal-up">
+                    <div class="aspect-square bg-[#c4f2ea] rounded-2xl md:rounded-[40px] overflow-hidden">
+                        <img src="https://i.pinimg.com/1200x/ae/25/a0/ae25a06943fedd5d9edc880454e3e161.jpg" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
+                    </div>
+                    <div class="aspect-square bg-[#10493f] rounded-2xl md:rounded-[40px] p-4 md:p-8 flex items-end">
+                        <p class="text-[#c4f2ea] serif text-lg md:text-2xl italic leading-tight">"To grow is to understand life's finest details."</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="process" class="section-padding bg-[#161918] text-white overflow-hidden relative">
+            <div class="container-custom">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-20 gap-8 reveal-up">
+                    <h2 class="serif text-5xl md:text-7xl text-[#c4f2ea]">Our Methodology.</h2>
+                    <p class="text-[#7a7a7a] max-w-xs text-sm">Four pillars of cultivation science integrated into every guide.</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 reveal-up">
+                    <div class="space-y-4 md:space-y-6">
+                        <span class="text-[10px] font-bold text-[#c4f2ea] border-b border-[#c4f2ea]/20 pb-2 block w-max uppercase">Step 01</span>
+                        <h4 class="text-xl md:text-2xl serif italic">Substrate Analysis</h4>
+                        <p class="text-xs text-[#7a7a7a] leading-relaxed">Defining the precise loamy texture and pH range required for anchoring.</p>
+                    </div>
+                    <div class="space-y-4 md:space-y-6">
+                        <span class="text-[10px] font-bold text-[#c4f2ea] border-b border-[#c4f2ea]/20 pb-2 block w-max uppercase">Step 02</span>
+                        <h4 class="text-xl md:text-2xl serif italic">Photoperiod Mapping</h4>
+                        <p class="text-xs text-[#7a7a7a] leading-relaxed">Calculating optimal sun exposure for photosynthetic efficiency.</p>
+                    </div>
+                    <div class="space-y-4 md:space-y-6">
+                        <span class="text-[10px] font-bold text-[#c4f2ea] border-b border-[#c4f2ea]/20 pb-2 block w-max uppercase">Step 03</span>
+                        <h4 class="text-xl md:text-2xl serif italic">Lifecycle Tracking</h4>
+                        <p class="text-xs text-[#7a7a7a] leading-relaxed">Identifying biological transitions from germination to maturation.</p>
+                    </div>
+                    <div class="space-y-4 md:space-y-6">
+                        <span class="text-[10px] font-bold text-[#c4f2ea] border-b border-[#c4f2ea]/20 pb-2 block w-max uppercase">Step 04</span>
+                        <h4 class="text-xl md:text-2xl serif italic">Risk Mitigation</h4>
+                        <p class="text-xs text-[#7a7a7a] leading-relaxed">Diagnostic strategies for pests, diseases, and nutrient stress.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="gallery" class="section-padding bg-white overflow-hidden">
+            <div class="container-custom">
+                <div class="flex justify-between items-end mb-12 md:mb-16 reveal-up">
+                    <div class="max-w-2xl">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-[#7a7a7a] mb-2">Visual Documentation</p>
+                        <h2 class="serif text-5xl md:text-7xl text-[#10493f]">Cultivation Gallery.</h2>
+                    </div>
+                    <div class="flex gap-4 mb-2">
+                        <button onclick="moveCarousel(-1)" class="w-10 h-10 md:w-12 md:h-12 rounded-full border border-stone-200 flex items-center justify-center hover:bg-[#c4f2ea] transition-all text-[#10493f]">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        </button>
+                        <button onclick="moveCarousel(1)" class="w-10 h-10 md:w-12 md:h-12 rounded-full border border-stone-200 flex items-center justify-center hover:bg-[#c4f2ea] transition-all text-[#10493f]">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7 7 7-7-7-7"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="carousel-container overflow-hidden">
+                        <div class="carousel-track" id="galleryTrack">
+                            <div class="carousel-item">
+                                <div class="relative group aspect-[4/5] rounded-[30px] overflow-hidden bg-stone-100">
+                                    <img src="https://i.pinimg.com/1200x/46/f1/0a/46f10ad55fb36e4f3a673886023aee7a.jpg" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Botany Study">
+                                    <div class="absolute bottom-6 left-6 right-6 p-6 bg-white/90 backdrop-blur rounded-2xl shadow-xl transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                                        <p class="text-[9px] font-bold text-[#10493f] uppercase tracking-widest mb-1">Macro Observation</p>
+                                        <h4 class="serif text-xl text-[#10493f]">Leaf Venation Patterns</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div class="relative group aspect-[4/5] rounded-[30px] overflow-hidden bg-stone-100">
+                                    <img src="https://i.pinimg.com/1200x/02/a8/fd/02a8fde12a7cdfd12b41b3675defd990.jpg" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Soil Texture">
+                                    <div class="absolute bottom-6 left-6 right-6 p-6 bg-white/90 backdrop-blur rounded-2xl shadow-xl transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                                        <p class="text-[9px] font-bold text-[#10493f] uppercase tracking-widest mb-1">Substrate Analysis</p>
+                                        <h4 class="serif text-xl text-[#10493f]">Root Oxygenation Spaces</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div class="relative group aspect-[4/5] rounded-[30px] overflow-hidden bg-stone-100">
+                                    <img src="https://i.pinimg.com/1200x/88/50/10/885010d5cdeb3aea21705213e35b3f1a.jpg" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Water Cycle">
+                                    <div class="absolute bottom-6 left-6 right-6 p-6 bg-white/90 backdrop-blur rounded-2xl shadow-xl transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                                        <p class="text-[9px] font-bold text-[#10493f] uppercase tracking-widest mb-1">Hydration Dynamics</p>
+                                        <h4 class="serif text-xl text-[#10493f]">Transpiration Efficiency</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div class="relative group aspect-[4/5] rounded-[30px] overflow-hidden bg-stone-100">
+                                    <img src="https://i.pinimg.com/736x/89/3b/b4/893bb4cad8d473a02be826f53c64ca64.jpg" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Growth Phase">
+                                    <div class="absolute bottom-6 left-6 right-6 p-6 bg-white/90 backdrop-blur rounded-2xl shadow-xl transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                                        <p class="text-[9px] font-bold text-[#10493f] uppercase tracking-widest mb-1">Developmental Stages</p>
+                                        <h4 class="serif text-xl text-[#10493f]">Terminal Bud Formation</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="archive" class="section-padding bg-[#fcfcfc]">
+            <div class="container-custom">
+                <div class="flex flex-col xl:flex-row justify-between items-start xl:items-end mb-12 md:mb-16 reveal-up gap-8">
+                    <div>
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-[#7a7a7a] mb-2">Species Catalogue</p>
+                        <h2 class="serif text-5xl md:text-7xl text-[#10493f]">The Archive.</h2>
+                    </div>
+                    
+                    <div class="w-full xl:w-auto flex flex-col gap-4">
+                        <div class="relative w-full">
+                            <input type="text" id="plantSearch" placeholder="Search by name..." class="search-input w-full md:w-96 px-6 py-3 rounded-full border border-stone-200 text-sm font-medium text-[#10493f] transition-all">
+                            <div class="absolute right-5 top-1/2 -translate-y-1/2 opacity-30">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                            </div>
+                        </div>
+                        <div class="flex overflow-x-auto gap-2 py-2 filter-scroll" id="filterContainer">
+                            <button class="filter-chip active px-4 py-2 rounded-full border border-stone-200 text-[9px] font-bold uppercase tracking-widest" onclick="setFilter('all', this)">All Species</button>
+                            <button class="filter-chip px-4 py-2 rounded-full border border-stone-200 text-[9px] font-bold uppercase tracking-widest" onclick="setFilter('Vegetable', this)">Vegetables</button>
+                            <button class="filter-chip px-4 py-2 rounded-full border border-stone-200 text-[9px] font-bold uppercase tracking-widest" onclick="setFilter('Flower', this)">Flowers</button>
+                            <button class="filter-chip px-4 py-2 rounded-full border border-stone-200 text-[9px] font-bold uppercase tracking-widest" onclick="setFilter('Herb', this)">Herbs</button>
+                            <button class="filter-chip px-4 py-2 rounded-full border border-stone-200 text-[9px] font-bold uppercase tracking-widest" onclick="setFilter('Root vegetable', this)">Roots</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10" id="plant-grid"></div>
+                
+                <!-- View More Section: Balanced & Centered -->
+                <div class="mt-16 md:mt-24 text-center reveal-up flex flex-col items-center justify-center">
+                    <p class="text-[10px] font-bold uppercase tracking-[0.4em] text-[#7a7a7a] mb-6">Discover more varieties</p>
+                    <button class="group flex items-center gap-5 focus:outline-none" onclick="document.getElementById('plantSearch').focus()">
+                        <span class="serif text-3xl md:text-5xl text-[#10493f] italic border-b-2 border-[#c4f2ea] group-hover:border-[#10493f] transition-all duration-500 leading-tight">Browse all species</span>
+                        <!-- <div class="w-14 h-14 rounded-full bg-[#10493f] text-[#c4f2ea] flex items-center justify-center transform group-hover:rotate-45 group-hover:scale-110 transition-all duration-500 shadow-lg shadow-[#10493f]/10">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14m-7 7 7-7-7-7"/></svg>
+                        </div> -->
+                    </button>
+                </div>
+
+                <div id="noResults" class="hidden py-24 text-center w-full">
+                    <h3 class="serif text-4xl text-[#7a7a7a]">No species found in current selection.</h3>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pro-Tips Section -->
+        <section id="pro-tips" class="section-padding bg-white border-t border-stone-50">
+            <div class="container-custom">
+                <div class="max-w-4xl mb-16 md:mb-20 reveal-up">
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-[#7a7a7a] mb-2">Technical Guidance</p>
+                    <h2 class="serif text-5xl md:text-7xl text-[#10493f] leading-tight">Pro-Tips for <br>Home Cultivation.</h2>
+                    <p class="text-[#7a7a7a] mt-6 text-lg leading-relaxed">Practical, verified solutions to common gardening challenges, designed for long-term botanical health in home environments.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+                    <div class="p-8 md:p-10 card-premium rounded-[30px] reveal-up">
+                        <div class="w-12 h-12 bg-[#c4f2ea] rounded-xl flex items-center justify-center text-[#10493f] mb-8">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                        </div>
+                        <h4 class="serif text-2xl text-[#10493f] mb-4">Morning Hydration Ritual</h4>
+                        <p class="text-sm text-[#7a7a7a] leading-relaxed italic">"Always water at sunrise."</p>
+                        <p class="text-xs text-[#7a7a7a] mt-4 leading-relaxed">Watering early allows leaves to dry quickly, preventing fungal growth and ensuring moisture reaches the roots before evaporation peaks.</p>
+                    </div>
+
+                    <div class="p-8 md:p-10 card-premium rounded-[30px] bg-[#10493f] text-[#c4f2ea] reveal-up">
+                        <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mb-8">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10v4h3v7h4v-7h3l-5-8-5 8z"/></svg>
+                        </div>
+                        <h4 class="serif text-2xl mb-4">The Finger Test</h4>
+                        <p class="text-sm opacity-80 leading-relaxed italic">"Feel the substrate, don't guess."</p>
+                        <p class="text-xs opacity-70 mt-4 leading-relaxed">Insert your finger 2 inches into the soil. If it's damp, skip watering. Overwatering is the #1 cause of plant death for beginners.</p>
+                    </div>
+
+                    <div class="p-8 md:p-10 card-premium rounded-[30px] reveal-up">
+                        <div class="w-12 h-12 bg-[#c4f2ea] rounded-xl flex items-center justify-center text-[#10493f] mb-8">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v19M5 8h14M8 15h8"/></svg>
+                        </div>
+                        <h4 class="serif text-2xl text-[#10493f] mb-4">Drainage Architecture</h4>
+                        <p class="text-sm text-[#7a7a7a] leading-relaxed italic">"Oxygen is as vital as water."</p>
+                        <p class="text-xs text-[#7a7a7a] mt-4 leading-relaxed">Never let pots sit in standing water. Ensure your containers have multiple drainage holes and use a perlite-rich mix for aeration.</p>
+                    </div>
+
+                    <div class="p-8 md:p-10 card-premium rounded-[30px] reveal-up">
+                        <div class="w-12 h-12 bg-[#c4f2ea] rounded-xl flex items-center justify-center text-[#10493f] mb-8">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m16 12-4-4-4 4M12 8v8"/></svg>
+                        </div>
+                        <h4 class="serif text-2xl text-[#10493f] mb-4">Nutrient Cycles</h4>
+                        <p class="text-sm text-[#7a7a7a] leading-relaxed italic">"Feed the soil, not just the plant."</p>
+                        <p class="text-xs text-[#7a7a7a] mt-4 leading-relaxed">Use slow-release organic compost. Heavy chemical fertilizers can burn tender root systems in small home containers.</p>
+                    </div>
+
+                    <div class="p-8 md:p-10 card-premium rounded-[30px] bg-[#c4f2ea] text-[#10493f] reveal-up">
+                        <div class="w-12 h-12 bg-white/40 rounded-xl flex items-center justify-center mb-8">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 20A7 7 0 0 1 11 6a7 7 0 0 1 0 14zM21 21l-4.35-4.35"/></svg>
+                        </div>
+                        <h4 class="serif text-2xl mb-4">Daily Observation</h4>
+                        <p class="text-sm opacity-80 leading-relaxed italic">"Early detection is the best cure."</p>
+                        <p class="text-xs opacity-70 mt-4 leading-relaxed">Check under leaves daily for tiny pests or spots. Catching a problem early is much easier than treating an infestation.</p>
+                    </div>
+
+                    <div class="p-8 md:p-10 card-premium rounded-[30px] reveal-up">
+                        <div class="w-12 h-12 bg-[#c4f2ea] rounded-xl flex items-center justify-center text-[#10493f] mb-8">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        </div>
+                        <h4 class="serif text-2xl text-[#10493f] mb-4">Photoperiod Mapping</h4>
+                        <p class="text-sm text-[#7a7a7a] leading-relaxed italic">"Map your light zones."</p>
+                        <p class="text-xs text-[#7a7a7a] mt-4 leading-relaxed">Identify exactly where full sun vs. partial shade hits your space. Placing a sun-loving plant in a low-light corner limits growth.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quote Section -->
+        <section class="section-padding bg-[#10493f] text-[#c4f2ea] relative overflow-hidden">
+            <div class="container-custom relative z-10">
+                <div class="max-w-5xl mx-auto text-center reveal-up">
+                    <div class="mb-12 opacity-20">
+                        <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor" class="mx-auto">
+                            <path d="M14.017 21L14.017 18C14.017 16.8954 14.9125 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H16.017C14.9125 8 14.017 7.10457 14.017 6V3L22.017 3V15C22.017 18.3137 19.3307 21 16.017 21H14.017ZM2.01697 21L2.01697 18C2.01697 16.8954 2.9124 16 4.01697 16H7.01697C7.56925 16 8.01697 15.5523 8.01697 15V9C8.01697 8.44772 7.56925 8 7.01697 8H4.01697C2.9124 8 2.01697 7.10457 2.01697 6V3L10.017 3V15C10.017 18.3137 7.33068 21 4.01697 21H2.01697Z" />
+                        </svg>
+                    </div>
+                    <h2 class="serif text-4xl md:text-6xl lg:text-7xl leading-tight italic">
+                        "To plant a garden is to believe in tomorrow. It is a technical dance between patience and biology."
+                    </h2>
+                    <div class="mt-12 flex flex-col items-center gap-4">
+                        <div class="w-12 h-px bg-[#c4f2ea] opacity-30"></div>
+                        <p class="text-[10px] font-bold uppercase tracking-[0.4em] opacity-60">The Leafy Collective</p>
+                    </div>
+                </div>
+            </div>
+            <div class="absolute -top-24 -left-24 w-96 h-96 bg-[#c4f2ea] rounded-full opacity-5 blur-[100px]"></div>
+            <div class="absolute -bottom-24 -right-24 w-[500px] h-[500px] bg-[#c4f2ea] rounded-full opacity-5 blur-[120px]"></div>
+        </section>
+
+        <footer class="py-12 md:py-20 bg-white border-t border-stone-100">
+            <div class="container-custom flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-[#10493f] rounded flex items-center justify-center text-[#c4f2ea] font-bold text-xl serif">L</div>
+                    <span class="font-bold tracking-tighter text-xl text-[#10493f]">leafy.</span>
+                </div>
+                <p class="text-[9px] md:text-[10px] font-bold text-[#7a7a7a] uppercase tracking-[0.4em]">Collective Archive &copy; 2026 &bull; Secured Technical Data</p>
+                <div class="flex gap-6 md:gap-8 text-[10px] font-bold uppercase tracking-widest text-[#7a7a7a]">
+                    <a href="https://my-new-portfolio-3sq7.vercel.app/" class="hover:text-[#10493f]">Portfolio</a>
+                    <a href="https://www.behance.net/papubadatya1" class="hover:text-[#10493f]">Behance</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- DASHBOARD VIEW -->
+    <div id="dashboard-view">
+        <nav class="fixed w-full z-50 glass-nav px-4 md:px-8 py-3 md:py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3 md:gap-6">
+                <div class="w-8 h-8 md:w-10 md:h-10 bg-[#10493f] rounded-xl flex items-center justify-center text-[#c4f2ea] font-bold text-xl md:text-2xl serif transition-transform hover:rotate-12">L</div>
+                <button onclick="showView('landing')" class="w-10 h-10 md:w-12 md:h-12 rounded-full border border-stone-100 flex items-center justify-center hover:bg-stone-50 transition-all">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
+                </button>
+                <div class="h-8 md:h-10 w-px bg-stone-100 hidden sm:block"></div>
+                <div>
+                    <span class="text-[8px] md:text-[9px] font-bold tracking-[0.3em] text-[#7a7a7a] uppercase block mb-0.5 md:mb-1" id="dash-id">Archive Entry</span>
+                    <h2 class="serif text-xl md:text-2xl text-[#10493f] leading-none" id="dash-name">Title</h2>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                 <span class="hidden sm:inline text-[9px] font-bold uppercase tracking-widest text-[#7a7a7a]">Botanical Guide</span>
+            </div>
+        </nav>
+        <div id="dashboard-content" class="pt-24 md:pt-32 pb-20 bg-white"></div>
+    </div>
+
+    <script>
+        const plantData = {
+            plants: [
+                {
+                    plant_id: "PLANT_TOMATO",
+                    basic_info: { name: "Tomato", scientific_name: "Solanum lycopersicum", family: "Solanaceae", plant_type: "Vegetable", life_cycle: "Annual", climate_preference: "Warm and mild climate" },
+                    image: "https://i.pinimg.com/736x/73/77/e8/7377e801092f3c202daf92113bc07847.jpg",
+                    planting_guide: { best_season: "Winter to early summer", sowing_method: "Seed", seed_depth_cm: 1, spacing_cm: 45, germination_time_days: "5–10" },
+                    soil_requirements: { soil_type: "Well-drained sandy loam", soil_ph: "5.8 – 6.8", soil_preparation: ["Loosen soil deeply", "Mix compost or cow dung", "Ensure proper drainage"] },
+                    sunlight_and_water: { sunlight: "Full sun", sunlight_hours_per_day: "6–8", watering_schedule: { early_stage: "Light daily watering", growth_stage: "Every 2–3 days", fruiting_stage: "Deep watering twice a week" } },
+                    growth_stages: [{ stage: "Germination", duration_days: "7", care: "Keep soil moist" }, { stage: "Vegetative", duration_days: "30", care: "Support plant, fertilize" }, { stage: "Flowering", duration_days: "20", care: "Avoid excess nitrogen" }, { stage: "Fruiting", duration_days: "30", care: "Consistent watering" }],
+                    common_problems: [{ problem: "Yellow leaves", cause: "Overwatering or nitrogen deficiency", solution: ["Reduce watering", "Use balanced fertilizer"] }],
+                    pests_and_diseases: [{ name: "Aphids", type: "Pest", symptoms: "Sticky and curled leaves", cure: "Neem oil spray weekly" }],
+                    harvest_info: { harvest_time_days: "80–90", harvest_sign: "Fruit turns red", post_harvest_tip: "Harvest regularly for more yield" },
+                    best_practices: ["Mulching improves moisture retention", "Avoid wetting leaves", "Staking is essential for tall varieties"],
+                    safety_notes: { toxic_parts: ["Leaves", "Stems"], safe_to_eat: ["Fruit"] }
+                },
+                {
+                    plant_id: "PLANT_SPINACH",
+                    basic_info: { name: "Spinach", scientific_name: "Spinacia oleracea", family: "Amaranthaceae", plant_type: "Leafy vegetable", life_cycle: "Annual", climate_preference: "Cool climate" },
+                    image: "https://images.unsplash.com/photo-1576045057995-568f588f82fb?auto=format&fit=crop&q=80&w=1200",
+                    planting_guide: { best_season: "Winter", sowing_method: "Seed", seed_depth_cm: 1, spacing_cm: 20, germination_time_days: "5–7" },
+                    soil_requirements: { soil_type: "Loamy soil", soil_ph: "6.5 – 7.5", soil_preparation: ["Add compost", "Keep soil loose", "Enrich with nitrogen-rich fertilizer"] },
+                    sunlight_and_water: { sunlight: "Partial sun", sunlight_hours_per_day: "4–6", watering_schedule: "Keep soil consistently moist" },
+                    growth_stages: [{ stage: "Leaf growth", duration_days: "25", care: "Harvest outer leaves regularly to encourage new growth" }],
+                    common_problems: [{ problem: "Bitter taste", cause: "High temperature", solution: ["Grow in cooler season", "Provide temporary shade"] }],
+                    pests_and_diseases: [{ name: "Leaf miners", type: "Pest", symptoms: "White trails on leaves", cure: "Remove affected leaves immediately" }],
+                    harvest_info: { harvest_time_days: "35–45", harvest_sign: "Leaves reach full size", post_harvest_tip: "Eat fresh for maximum nutrition" },
+                    best_practices: ["Frequent harvesting encourages growth", "Mulch to keep roots cool"],
+                    safety_notes: { toxic_parts: [], safe_to_eat: ["Leaves"] }
+                },
+                {
+                    plant_id: "PLANT_SUNFLOWER",
+                    basic_info: { name: "Sunflower", scientific_name: "Helianthus annuus", family: "Asteraceae", plant_type: "Flower", life_cycle: "Annual", climate_preference: "Hot and sunny climate" },
+                    image: "https://images.unsplash.com/photo-1470509037663-253afd7f0f51?auto=format&fit=crop&q=80&w=1200",
+                    planting_guide: { best_season: "Summer", sowing_method: "Direct seed", seed_depth_cm: 2, spacing_cm: 30, germination_time_days: "7–10" },
+                    soil_requirements: { soil_type: "Well-drained soil", soil_ph: "6.0 – 7.5", soil_preparation: ["Dig deeply to accommodate taproots", "Add light compost"] },
+                    sunlight_and_water: { sunlight: "Full sun", sunlight_hours_per_day: "8+", watering_schedule: "Every 3–4 days" },
+                    growth_stages: [{ stage: "Stem growth", duration_days: "30", care: "Ensure maximum sunlight" }, { stage: "Flowering", duration_days: "30", care: "Support tall stem if windy" }],
+                    common_problems: [{ problem: "Weak stem", cause: "Low sunlight", solution: ["Move to sunnier spot", "Avoid overcrowding"] }],
+                    pests_and_diseases: [{ name: "Birds", type: "Pest", symptoms: "Missing seeds", cure: "Netting after flowering" }],
+                    harvest_info: { harvest_time_days: "75–85", harvest_sign: "Back of flower turns brown", post_harvest_tip: "Hang heads to dry for seed collection" },
+                    best_practices: ["Plant in open space", "Taller varieties may need staking"],
+                    safety_notes: { toxic_parts: [], safe_to_eat: ["Seeds"] }
+                },
+                {
+                    plant_id: "PLANT_CHILLI",
+                    basic_info: { name: "Chilli", scientific_name: "Capsicum annuum", family: "Solanaceae", plant_type: "Vegetable", life_cycle: "Annual", climate_preference: "Warm climate" },
+                    image: "https://i.pinimg.com/736x/40/f8/aa/40f8aaf312470a0ce1388ae595b4d634.jpg",
+                    planting_guide: { best_season: "Winter", sowing_method: "Seed", seed_depth_cm: 1, spacing_cm: 40, germination_time_days: "7–14" },
+                    soil_requirements: { soil_type: "Loamy soil", soil_ph: "6.0 – 6.8", soil_preparation: ["Mix well-rotted manure", "Keep soil friable"] },
+                    sunlight_and_water: { sunlight: "Full sun", sunlight_hours_per_day: "6–8", watering_schedule: "Moderate, avoid waterlogging" },
+                    growth_stages: [{ stage: "Vegetative", duration_days: "30", care: "Pinch tips for bushy growth and more yield" }],
+                    common_problems: [{ problem: "Flower drop", cause: "Heat stress", solution: ["Mulching", "Regular watering during dry spells"] }],
+                    pests_and_diseases: [{ name: "Mites", type: "Pest", symptoms: "Curled leaves", cure: "Sulphur spray or organic miticide" }],
+                    harvest_info: { harvest_time_days: "70–80", harvest_sign: "Fruit turns red or green", post_harvest_tip: "Can be dried for long-term storage" },
+                    best_practices: ["Regular harvesting increases yield", "Keep soil temperature stable"],
+                    safety_notes: { toxic_parts: [], safe_to_eat: ["Fruit"] }
+                },
+                {
+                    plant_id: "PLANT_CORIANDER",
+                    basic_info: { name: "Coriander", scientific_name: "Coriandrum sativum", family: "Apiaceae", plant_type: "Herb", life_cycle: "Annual", climate_preference: "Cool climate" },
+                    image: "https://i.pinimg.com/1200x/54/d2/14/54d2144ccd579de183e75c1fceed616f.jpg",
+                    planting_guide: { best_season: "Winter", sowing_method: "Seed", seed_depth_cm: 1, spacing_cm: 15, germination_time_days: "7–10" },
+                    soil_requirements: { soil_type: "Loose loamy soil", soil_ph: "6.2 – 6.8", soil_preparation: ["Till soil thoroughly", "Add rich leaf compost"] },
+                    sunlight_and_water: { sunlight: "Partial sun", sunlight_hours_per_day: "4–5", watering_schedule: "Light frequent watering" },
+                    growth_stages: [{ stage: "Leaf harvest", duration_days: "30", care: "Cut leaves gently from the base" }],
+                    common_problems: [{ problem: "Bolting", cause: "High temperature", solution: ["Grow in cool season", "Keep soil moist"] }],
+                    pests_and_diseases: [{ name: "Powdery Mildew", type: "Disease", symptoms: "White powder on leaves", cure: "Apply baking soda spray" }],
+                    harvest_info: { harvest_time_days: "30–40", harvest_sign: "Leaves fully developed", post_harvest_tip: "Harvest early morning for best aroma" },
+                    best_practices: ["Split seeds before sowing for better germination", "Don't overwater"],
+                    safety_notes: { toxic_parts: [], safe_to_eat: ["Leaves", "Seeds"] }
+                },
+                {
+                    plant_id: "PLANT_ROSE",
+                    basic_info: { name: "Rose", scientific_name: "Rosa spp.", family: "Rosaceae", plant_type: "Flower", life_cycle: "Perennial", climate_preference: "Mild to warm climate" },
+                    image: "https://i.pinimg.com/736x/d9/f2/f1/d9f2f1a0cf3c6e5e2e8485b5900bc919.jpg",
+                    planting_guide: { best_season: "Late winter to early spring", sowing_method: "Stem cutting / Grafted plant", seed_depth_cm: 2, spacing_cm: 60, germination_time_days: "10–20" },
+                    soil_requirements: { soil_type: "Well-drained loamy soil", soil_ph: "6.0 – 7.0", soil_preparation: ["Dig 40cm deep", "Mix compost", "Ensure drainage"] },
+                    sunlight_and_water: { sunlight: "Full sun to partial shade", sunlight_hours_per_day: "5–7", watering_schedule: { early_stage: "Light daily", growth_stage: "Every 2–3 days", flowering_stage: "Deep watering 2x week" } },
+                    growth_stages: [{ stage: "Establishment", duration_days: "20", care: "Keep moist, protect from sun" }, { stage: "Vegetative", duration_days: "40", care: "Regular pruning" }, { stage: "Budding", duration_days: "15", care: "Potassium rich feed" }, { stage: "Flowering", duration_days: "30", care: "Remove spent blooms" }],
+                    common_problems: [{ problem: "Poor flowering", cause: "Lack of sun", solution: ["Ensure adequate light", "Prune correctly"] }],
+                    pests_and_diseases: [{ name: "Black spot", type: "Disease", symptoms: "Black spots on leaves", cure: "Apply fungicide" }],
+                    harvest_info: { harvest_time_days: "90–120", harvest_sign: "Opened blooms", post_harvest_tip: "Cut early morning" },
+                    best_practices: ["Prune for airflow", "Fertilize during growth"],
+                    safety_notes: { toxic_parts: ["Thorns"], safe_to_eat: ["Petals"] }
+                },
+                {
+                    plant_id: "PLANT_POTATO",
+                    basic_info: { name: "Potato", scientific_name: "Solanum tuberosum", family: "Solanaceae", plant_type: "Root vegetable", life_cycle: "Annual", climate_preference: "Cool to moderate climate" },
+                    image: "https://i.pinimg.com/1200x/41/22/e1/4122e1371667376f22a539964c1ffd31.jpg",
+                    planting_guide: { best_season: "Late autumn to winter", sowing_method: "Seed tuber", seed_depth_cm: 10, spacing_cm: 30, germination_time_days: "10–15" },
+                    soil_requirements: { soil_type: "Loose well-drained sandy loam", soil_ph: "5.0 – 6.5", soil_preparation: ["Plow deeply", "Remove stones", "Incorporate compost"] },
+                    sunlight_and_water: { sunlight: "Full sun", sunlight_hours_per_day: "6–8", watering_schedule: { early_stage: "Light daily", growth_stage: "Every 3–4 days", tuber_formation_stage: "Deep 2x week" } },
+                    growth_stages: [{ stage: "Sprouting", duration_days: "15", care: "Keep slightly moist" }, { stage: "Vegetative", duration_days: "30", care: "Earth up soil" }, { stage: "Tuber initiation", duration_days: "20", care: "Steady moisture" }, { stage: "Maturation", duration_days: "25", care: "Reduce water" }],
+                    common_problems: [{ problem: "Poor tuber formation", cause: "Compact soil", solution: ["Improve looseness", "Cool season planting"] }],
+                    pests_and_diseases: [{ name: "Late blight", type: "Disease", symptoms: "Brown spots", cure: "Apply fungicide" }],
+                    harvest_info: { harvest_time_days: "90–110", harvest_sign: "Yellowing foliage", post_harvest_tip: "Cure in shade" },
+                    best_practices: ["Crop rotation", "Earthing up improves yield"],
+                    safety_notes: { toxic_parts: ["Leaves", "Stems", "Green tubers"], safe_to_eat: ["Mature tubers"] }
+                },
+                {
+                    plant_id: "PLANT_CARROT",
+                    basic_info: { name: "Carrot", scientific_name: "Daucus carota", family: "Apiaceae", plant_type: "Root vegetable", life_cycle: "Annual", climate_preference: "Cool to moderate climate" },
+                    image: "https://i.pinimg.com/736x/b9/7a/49/b97a494cb6c0d8411b09f8263c9b1023.jpg",
+                    planting_guide: { best_season: "Autumn to winter", sowing_method: "Direct seed", seed_depth_cm: 1, spacing_cm: 8, germination_time_days: "10–14" },
+                    soil_requirements: { soil_type: "Loose deep sandy loam", soil_ph: "6.0 – 6.8", soil_preparation: ["Remove stones", "Loosen 30cm deep", "Avoid fresh manure"] },
+                    sunlight_and_water: { sunlight: "Full sun", sunlight_hours_per_day: "5–7", watering_schedule: { early_stage: "Light daily", growth_stage: "Every 3–4 days", root_development_stage: "Deep 1-2x week" } },
+                    growth_stages: [{ stage: "Germination", duration_days: "14", care: "Keep moist" }, { stage: "Leaf development", duration_days: "25", care: "Thin seedlings" }, { stage: "Root expansion", duration_days: "30", care: "Maintain loose soil" }, { stage: "Maturation", duration_days: "20", care: "Avoid overwatering" }],
+                    common_problems: [{ problem: "Forked roots", cause: "Rocky soil", solution: ["Use stone-free soil"] }],
+                    pests_and_diseases: [{ name: "Carrot fly", type: "Pest", symptoms: "Stunted growth", cure: "Neem oil" }],
+                    harvest_info: { harvest_time_days: "70–90", harvest_sign: "Full root color", post_harvest_tip: "Harvest carefully" },
+                    best_practices: ["Thin early for straight roots", "Even moisture"],
+                    safety_notes: { toxic_parts: ["Leaves"], safe_to_eat: ["Root"] }
+                },
+                {
+                    plant_id: "PLANT_HIBISCUS",
+                    basic_info: { name: "Hibiscus", scientific_name: "Hibiscus rosa-sinensis", family: "Malvaceae", plant_type: "Flower", life_cycle: "Perennial", climate_preference: "Warm tropical climate" },
+                    image: "https://i.pinimg.com/736x/62/d3/d2/62d3d2d50c0e18237891bedb33b337de.jpg",
+                    planting_guide: { best_season: "Spring to early summer", sowing_method: "Nursery plant", seed_depth_cm: 3, spacing_cm: 90, germination_time_days: "14–21" },
+                    soil_requirements: { soil_type: "Fertile loamy soil", soil_ph: "6.0 – 7.0", soil_preparation: ["Loosen deeply", "Mix compost", "Ensure drainage"] },
+                    sunlight_and_water: { sunlight: "Full sun to partial shade", sunlight_hours_per_day: "5–7", watering_schedule: { early_stage: "Light daily", growth_stage: "Every 2–3 days", flowering_stage: "Deep watering 2x week" } },
+                    growth_stages: [{ stage: "Establishment", duration_days: "30", care: "Protect from wind" }, { stage: "Vegetative", duration_days: "45", care: "Pruning" }, { stage: "Budding", duration_days: "20", care: "Phosphorus feed" }, { stage: "Flowering", duration_days: "Cont.", care: "Remove spent flowers" }],
+                    common_problems: [{ problem: "Bud drop", cause: "Water stress", solution: ["Consistent watering"] }],
+                    pests_and_diseases: [{ name: "Mealybugs", type: "Pest", symptoms: "White masses", cure: "Alcohol swab" }],
+                    harvest_info: { harvest_time_days: "90–120", harvest_sign: "Opened flowers", post_harvest_tip: "Morning harvest" },
+                    best_practices: ["Light pruning", "Organic mulch", "Balanced monthly fertilizer"],
+                    safety_notes: { toxic_parts: ["None"], safe_to_eat: ["Flowers"] }
+                }
+            ]
+        };
+
+        let currentFilter = 'all';
+        let currentSearch = '';
+        let carouselIndex = 0;
+
+        function moveCarousel(direction) {
+            const track = document.getElementById('galleryTrack');
+            const items = document.querySelectorAll('.carousel-item');
+            const totalItems = items.length;
+            let visibleItems = 1;
+            if (window.innerWidth >= 1024) visibleItems = 3;
+            else if (window.innerWidth >= 768) visibleItems = 2;
+            carouselIndex = (carouselIndex + direction + totalItems) % totalItems;
+            if (carouselIndex > totalItems - visibleItems) carouselIndex = totalItems - visibleItems;
+            if (carouselIndex < 0) carouselIndex = 0;
+            const offset = (100 / visibleItems) * carouselIndex;
+            track.style.transform = `translateX(-${offset}%)`;
+        }
+
+        function setFilter(type, btn) {
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = type;
+            renderArchive();
+        }
+
+        function renderArchive() {
+            const grid = document.getElementById("plant-grid");
+            const noResults = document.getElementById("noResults");
+            
+            const filtered = plantData.plants.filter(p => {
+                const matchesSearch = p.basic_info.name.toLowerCase().includes(currentSearch.toLowerCase());
+                const matchesFilter = currentFilter === 'all' || p.basic_info.plant_type.includes(currentFilter);
+                return matchesSearch && matchesFilter;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+                grid.innerHTML = filtered.map((p, i) => `
+                    <div class="card-premium rounded-[30px] md:rounded-[40px] overflow-hidden group cursor-pointer reveal-up" onclick="goToDashboard('${p.plant_id}')">
+                        <div class="h-64 md:h-80 relative overflow-hidden">
+                            <img src="${p.image}" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="${p.basic_info.name}">
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#10493f]/60 to-transparent transition-opacity group-hover:opacity-80"></div>
+                            <div class="absolute bottom-6 left-6">
+                                <span class="px-4 py-1.5 bg-[#c4f2ea] text-[#10493f] text-[9px] md:text-[10px] font-bold rounded-full uppercase tracking-widest">${p.basic_info.plant_type}</span>
+                            </div>
+                        </div>
+                        <div class="p-6 md:p-10">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="serif text-3xl md:text-4xl text-[#10493f] mb-2 group-hover:italic transition-all">${p.basic_info.name}</h3>
+                                    <p class="text-[10px] md:text-xs italic text-[#7a7a7a] serif">${p.basic_info.scientific_name}</p>
+                                </div>
+                                <span class="text-xs font-bold text-[#10493f] opacity-30">${(i + 1).toString().padStart(2, '0')}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join("");
+                
+                // Re-trigger reveal animation for newly rendered cards
+                gsap.fromTo("#plant-grid .reveal-up", {opacity:0, y:30}, {opacity:1, y:0, duration:0.8, stagger:0.1});
+            }
+        }
+
+        // Global event listeners for input
+        window.addEventListener("load", () => {
+            document.getElementById('plantSearch').addEventListener('input', (e) => {
+                currentSearch = e.target.value;
+                renderArchive();
+            });
+            renderArchive();
+            gsap.from("nav", { y: -20, opacity: 0, duration: 1 });
+            gsap.utils.toArray(".reveal-up").forEach((el) => observer.observe(el));
+        });
+
+        function showView(viewName) {
+            const overlay = document.getElementById("page-transition");
+            gsap.to(overlay, {
+                y: "0%", duration: 0.8, ease: "power4.inOut",
+                onComplete: () => {
+                    document.getElementById("landing-view").style.display = viewName === "landing" ? "block" : "none";
+                    document.getElementById("dashboard-view").style.display = viewName === "dashboard" ? "block" : "none";
+                    window.scrollTo(0, 0);
+                    gsap.to(overlay, { y: "-100%", duration: 0.8, ease: "power4.inOut", delay: 0.2 });
+                    if (viewName === "landing") renderArchive();
+                },
+            });
+        }
+
+        function goToDashboard(plantId) {
+            const plant = plantData.plants.find((p) => p.plant_id === plantId);
+            document.getElementById('dash-id').innerText = `Archive Entry ${plant.plant_id}`;
+            document.getElementById('dash-name').innerText = plant.basic_info.name;
+            renderDashboard(plant);
+            showView("dashboard");
+        }
+
+        function renderDashboard(plant) {
+            const content = document.getElementById("dashboard-content");
+            let watering = typeof plant.sunlight_and_water.watering_schedule === "string"
+                ? `<p class="font-bold text-sm text-[#10493f]">${plant.sunlight_and_water.watering_schedule}</p>`
+                : `<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="p-4 bg-blue-50 border border-blue-100 rounded-2xl"><p class="text-[9px] font-bold text-blue-400 uppercase mb-1">Early</p><p class="text-xs font-bold text-blue-900">${plant.sunlight_and_water.watering_schedule.early_stage}</p></div>
+                    <div class="p-4 bg-blue-50 border border-blue-100 rounded-2xl"><p class="text-[9px] font-bold text-blue-400 uppercase mb-1">Growth</p><p class="text-xs font-bold text-blue-900">${plant.sunlight_and_water.watering_schedule.growth_stage}</p></div>
+                    <div class="p-4 bg-[#10493f] rounded-2xl"><p class="text-[9px] font-bold opacity-60 text-white uppercase mb-1">${Object.keys(plant.sunlight_and_water.watering_schedule)[2]?.replace(/_/g, ' ').replace('stage', '') || 'Final'}</p><p class="text-xs font-bold text-white">${Object.values(plant.sunlight_and_water.watering_schedule)[2]}</p></div>
+                </div>`;
+
+            content.innerHTML = `
+                <div class="container-custom">
+                    <header class="flex flex-col lg:flex-row gap-8 lg:gap-20 items-start lg:items-end mb-16 md:mb-24">
+                        <div class="w-full">
+                            <div class="flex flex-wrap gap-3 mb-6">
+                                <span class="px-4 py-1.5 bg-[#c4f2ea] text-[#10493f] text-[10px] font-bold rounded-full uppercase tracking-widest">${plant.basic_info.life_cycle}</span>
+                                <span class="px-4 py-1.5 bg-stone-100 text-[#7a7a7a] text-[10px] font-bold rounded-full uppercase tracking-widest">${plant.basic_info.climate_preference}</span>
+                            </div>
+                            <h1 class="serif text-6xl md:text-8xl lg:text-[9rem] text-[#10493f] mb-4 md:mb-6 leading-none break-words">${plant.basic_info.name}</h1>
+                            <p class="text-xl md:text-3xl italic text-[#7a7a7a] serif leading-tight">${plant.basic_info.scientific_name} <br class="hidden md:block">&bull; ${plant.basic_info.family}</p>
+                        </div>
+                        <div class="w-full rounded-[30px] md:rounded-[60px] overflow-hidden aspect-video shadow-2xl">
+                            <img src="${plant.image}" class="w-full h-full object-cover">
+                        </div>
+                    </header>
+
+                    <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start mb-24 md:mb-32">
+                        <div class="lg:col-span-8 space-y-12 md:space-y-16">
+                            <div>
+                                <h3 class="serif text-4xl md:text-5xl mb-8 md:mb-10 text-[#10493f]">Biological Progression</h3>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
+                                    ${plant.growth_stages.map((s, idx) => `
+                                        <div class="p-8 md:p-10 card-premium rounded-[30px] md:rounded-[40px]">
+                                            <div class="flex justify-between items-start mb-6">
+                                                <span class="text-[10px] font-bold text-[#7a7a7a] uppercase tracking-widest">Phase 0${idx + 1}</span>
+                                                <span class="px-3 py-1 bg-[#c4f2ea] text-[#10493f] text-[9px] font-bold rounded uppercase">${s.duration_days} Days</span>
+                                            </div>
+                                            <h4 class="text-xl md:text-2xl font-bold mb-4 text-[#10493f]">${s.stage}</h4>
+                                            <p class="text-sm text-[#7a7a7a] leading-relaxed border-t border-stone-100 pt-6 italic">Care Protocol: ${s.care}</p>
+                                        </div>
+                                    `).join("")}
+                                </div>
+                            </div>
+
+                            <div class="p-8 md:p-12 card-premium rounded-[30px] md:rounded-[60px]">
+                                <div class="flex flex-col md:flex-row justify-between mb-10 md:mb-16 gap-8">
+                                    <h3 class="serif text-3xl md:text-4xl text-[#10493f]">Substrate & Sowing</h3>
+                                    <div class="md:text-right">
+                                        <p class="text-[10px] font-bold text-[#7a7a7a] uppercase mb-1">Acidity Range</p>
+                                        <p class="text-3xl md:text-4xl font-bold text-[#10493f] serif">${plant.soil_requirements.soil_ph}</p>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-8 md:mb-12">
+                                    <div class="space-y-4 md:space-y-6">
+                                        <div class="flex justify-between border-b border-stone-100 pb-3 text-xs md:text-sm">
+                                            <span class="text-[#7a7a7a]">Soil Consistency</span>
+                                            <span class="font-bold text-right">${plant.soil_requirements.soil_type}</span>
+                                        </div>
+                                        <div class="flex justify-between border-b border-stone-100 pb-3 text-xs md:text-sm">
+                                            <span class="text-[#7a7a7a]">Sowing Depth</span>
+                                            <span class="font-bold">${plant.planting_guide.seed_depth_cm} cm</span>
+                                        </div>
+                                        <div class="flex justify-between border-b border-stone-100 pb-3 text-xs md:text-sm">
+                                            <span class="text-[#7a7a7a]">Plant Spacing</span>
+                                            <span class="font-bold">${plant.planting_guide.spacing_cm} cm</span>
+                                        </div>
+                                        <div class="p-6 bg-stone-50 rounded-3xl">
+                                            <p class="text-[9px] font-bold text-[#10493f] uppercase mb-3">Site Preparation</p>
+                                            <ul class="space-y-2">
+                                                ${(plant.soil_requirements.soil_preparation || []).map(step => `<li class="text-xs text-[#7a7a7a] flex gap-2"><span>&bull;</span> ${step}</li>`).join("")}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="chart-container h-48 md:h-64"><canvas id="soilChart"></canvas></div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                                <div class="p-8 md:p-10 card-premium rounded-[30px] md:rounded-[40px] bg-[#10493f] text-white">
+                                    <h4 class="serif text-2xl md:text-3xl text-[#c4f2ea] mb-6 md:mb-8">Photoperiod</h4>
+                                    <div class="flex items-baseline gap-4 mb-4">
+                                        <span class="text-6xl md:text-7xl font-bold serif">${plant.sunlight_and_water.sunlight_hours_per_day || "6-8"}</span>
+                                        <span class="text-[10px] md:text-xs font-bold uppercase opacity-60">Hours Per Day</span>
+                                    </div>
+                                    <p class="text-sm opacity-80 leading-relaxed italic border-t border-white/10 pt-6">Position in ${plant.sunlight_and_water.sunlight} to ensure optimal biosynthetic throughput.</p>
+                                </div>
+                                <div class="p-8 md:p-10 card-premium rounded-[30px] md:rounded-[40px]">
+                                    <h4 class="serif text-2xl md:text-3xl text-[#10493f] mb-6 md:mb-8">Hydration</h4>
+                                    <div class="mb-8">${watering}</div>
+                                    <p class="text-xs text-[#7a7a7a] leading-relaxed italic border-t border-stone-100 pt-6">Monitor root moisture levels consistently.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <aside class="lg:col-span-4 space-y-8">
+                            <div class="p-8 md:p-10 bg-[#161918] text-white rounded-[40px] md:rounded-[50px] shadow-2xl">
+                                <h3 class="serif text-3xl text-[#c4f2ea] mb-8">Risk Diagnostic</h3>
+                                <div class="space-y-8">
+                                    ${plant.common_problems.map(prob => `
+                                        <div>
+                                            <p class="text-[10px] font-bold text-red-400 uppercase mb-2 tracking-widest">${prob.problem}</p>
+                                            <p class="text-xs opacity-60 mb-3 italic">Cause: ${prob.cause}</p>
+                                            <div class="p-4 bg-white/5 rounded-2xl border border-white/10 text-xs">
+                                                <p class="leading-relaxed text-[#c4f2ea]"><span class="font-bold">Cure:</span> ${prob.solution.join(", ")}</p>
+                                            </div>
+                                        </div>
+                                    `).join("")}
+                                    ${(plant.pests_and_diseases || []).map(pest => `
+                                        <div class="pt-8 border-t border-white/10">
+                                            <p class="text-[10px] font-bold text-amber-400 uppercase mb-2 tracking-widest">${pest.name} (${pest.type})</p>
+                                            <p class="text-xs opacity-60 mb-3 italic">Symptoms: ${pest.symptoms}</p>
+                                            <div class="p-4 bg-white/5 rounded-2xl border border-white/10 text-xs">
+                                                <p class="leading-relaxed text-[#c4f2ea] font-bold">Protocol: ${pest.cure}</p>
+                                            </div>
+                                        </div>
+                                    `).join("")}
+                                </div>
+                            </div>
+
+                            <div class="p-8 md:p-10 card-premium rounded-[40px] md:rounded-[50px]">
+                                <h4 class="text-[10px] font-bold text-[#7a7a7a] uppercase mb-6 md:mb-8 tracking-widest">Expert Best Practices</h4>
+                                <ul class="space-y-4">
+                                    ${plant.best_practices.map(bp => `<li class="text-xs text-[#10493f] flex gap-3 font-bold leading-relaxed"><span class="w-1.5 h-1.5 rounded-full bg-[#c4f2ea] mt-1.5 shrink-0"></span> ${bp}</li>`).join("")}
+                                </ul>
+                            </div>
+
+                            <div class="p-8 md:p-10 bg-[#c4f2ea] rounded-[40px] md:rounded-[50px] text-[#10493f]">
+                                <h4 class="serif text-2xl mb-4">Biological Safety</h4>
+                                <div class="space-y-3">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-2 h-2 rounded-full ${plant.safety_notes.toxic_parts.length > 0 ? "bg-red-500" : "bg-[#10493f]"}"></span>
+                                        <p class="text-[10px] font-bold">Toxic: ${plant.safety_notes.toxic_parts.join(", ") || "N/A"}</p>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-[#10493f]"></span>
+                                        <p class="text-[10px] font-bold">Edible: ${plant.safety_notes.safe_to_eat.join(", ")}</p>
+                                    </div>
+                                </div>
+                                <div class="mt-10 pt-8 border-t border-[#10493f]/10">
+                                    <p class="text-[9px] font-bold uppercase opacity-60 mb-2">Harvest Signal</p>
+                                    <p class="text-xl serif italic font-bold leading-tight">${plant.harvest_info.harvest_sign}</p>
+                                    <p class="text-[10px] italic mt-4">${plant.harvest_info.post_harvest_tip || ""}</p>
+                                </div>
+                            </div>
+                        </aside>
+                    </section>
+                </div>
+            `;
+            initSoilChart();
+        }
+
+        function initSoilChart() {
+            const canvas = document.getElementById("soilChart");
+            if (!canvas) return;
+            new Chart(canvas.getContext("2d"), {
+                type: "line",
+                data: {
+                    labels: ["Prep", "Sow", "Growth", "Maturity"],
+                    datasets: [{
+                        data: [75, 95, 88, 80],
+                        borderColor: "#10493f",
+                        backgroundColor: "rgba(196, 242, 234, 0.2)",
+                        fill: true,
+                        tension: 0.5,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { display: false },
+                        x: { grid: { display: false }, ticks: { color: "#7a7a7a", font: { size: 9, family: "Plus Jakarta Sans", weight: "bold" } } }
+                    }
+                }
+            });
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    gsap.to(entry.target, { opacity: 1, y: 0, duration: 1.2, ease: "power3.out" });
+                }
+            });
+        }, { threshold: 0.1 });
+
+    </script>
+</body>
+</html>
